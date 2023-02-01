@@ -39,6 +39,7 @@ class VideoConditions extends PostTypePattern {
 
 	protected function update_post( $post ) {
 		update_post_meta( $post->ID, '_interval', filter_input( INPUT_POST, '_interval' ) );
+		update_post_meta( $post->ID, '_offset', filter_input( INPUT_POST, '_offset' ) );
 		update_post_meta( $post->ID, '_channel_ids', filter_input( INPUT_POST, '_channel_ids' ) );
 		update_post_meta( $post->ID, '_search_query', filter_input( INPUT_POST, '_search_query' ) );
 	}
@@ -60,6 +61,20 @@ class VideoConditions extends PostTypePattern {
 						</option>
 					<?php endforeach; ?>
 				</select>
+			</p>
+
+			<p style="margin: 20px;">
+				<label for="tsvc-offset"><?php esc_html_e( 'Offset in Hour', 'tsvc' ); ?></label><br />
+				<select id="tsvc-offset" name="_offset" style="width: 100%; box-sizing: border-box; margin: 10px 0;">
+					<?php foreach ( range( 0, 12 ) as $offset ) : ?>
+						<option value="<?php echo esc_attr( $offset); ?>"<?php selected( $offset, (int) get_post_meta( $post->ID, '_offset', true ) ); ?>>
+							<?php echo esc_html( $offset ); ?>
+						</option>
+					<?php endforeach; ?>
+				</select>
+				<span class="description">
+					<?php esc_html_e( 'If you set 1 as offset and set every 6 hours, the condition runs at 1, 7, 13, and 19.', 'tsvc' ); ?>
+				</span>
 			</p>
 
 			<p style="margin: 20px;">
@@ -130,8 +145,8 @@ class VideoConditions extends PostTypePattern {
 		}
 		// Channel is specified.
 		$channel_ids = implode( ',', $channel_ids );
-		$cache_key = 'tsvc_' . md5( $channel_ids );
-		$cache = get_transient( $cache_key );
+		$cache_key   = 'tsvc_' . md5( $channel_ids );
+		$cache       = get_transient( $cache_key );
 		if ( false !== $cache ) {
 			return $cache;
 		}
@@ -141,6 +156,7 @@ class VideoConditions extends PostTypePattern {
 			return $result;
 		}
 		set_transient( $cache_key, $result );
+
 		return $result;
 	}
 
@@ -150,9 +166,142 @@ class VideoConditions extends PostTypePattern {
 	 * @param array $video   Video object.
 	 * @param int   $post_id Post ID,
 	 *
-	 * @return void
+	 * @return bool
 	 */
 	public function is_matching( $video, $post_id ) {
-		return true;
+		// Is this #shorts?
+		$include_short = apply_filters( 'tsvc_include_shorts', false, $post_id );
+		if ( ! $include_short && ( preg_match( '/#Shorts/u', $video['snippet']['title'] ) || preg_match( '/#Shorts/u', $video['snippet']['description'] ) ) ) {
+			return false;
+		}
+		// Split in line.
+		$conditions = $this->get_post_condition( $post_id );
+		if ( empty( $conditions ) ) {
+			return true;
+		}
+		foreach ( $conditions as $line ) {
+			$should_match = count( $line );
+			$matched      = 0;
+			foreach ( $line as $word ) {
+				// Is title matches?
+				if ( false !== strpos( $video['snippet']['title'], $word ) ) {
+					$matched++;
+					continue 1;
+				}
+				// Is description matches?
+				if ( false !== strpos( $video['snippet']['description'], $word) ) {
+					$matched++;
+					continue 1;
+				}
+			}
+			if ( $should_match === $matched ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get video condition.
+	 *
+	 * @param int $post_id Post id of condition.
+	 * @return string[][]
+	 */
+	public function get_post_condition( $post_id ) {
+		return array_map( function( $line ) {
+			return array_values( array_filter( array_map( 'trim', explode( ',', $line ) ) ) );
+		}, array_filter( preg_split( '/(\r\n|\r|\n)/u', (string) get_post_meta( $post_id, '_search_query', true ) ) ) );
+	}
+
+	/**
+	 * Get matching hours of condition in day.
+	 *
+	 * @param int $post_id Post ID of condition.
+	 * @return int[]
+	 */
+	public function matching_hours( $post_id ) {
+		$offset         = (int) get_post_meta( $post_id, '_offset', true );
+		$frequency      = (int) get_post_meta( $post_id, '_interval', true );
+		$hour           = $offset;
+		$matching_hours = [];
+		while ( 24 > $hour ) {
+			$matching_hours[] = $hour;
+			$hour += $frequency;
+		}
+		return $matching_hours;
+	}
+
+	/**
+	 * Get videos and save.
+	 *
+	 * @param int $post_id Post ID.
+	 * @param int 4page    Pagination.
+	 * @return \WP_Post[]|\WP_Error
+	 */
+	public function sync( $post_id, $page = 1 ) {
+		$videos = $this->get_condition_videos( $post_id, $page );
+		if ( is_wp_error( $videos ) ) {
+			return $videos;
+		}
+		$posts      = [];
+		$errors     = new \WP_Error();
+		$controller = VideoPostType::get_instance();
+		foreach ( $videos as $video ) {
+			$existing = $controller->video_exists( $video['id'] );
+			$result   = $controller->save_video( $video, $existing );
+			if ( is_wp_error( $result ) ) {
+				$errors->add( $result->get_error_code(), $result->get_error_message() );
+			} else {
+				$posts[] = get_post( $result );
+			}
+		}
+		return $errors->get_error_messages() ? $errors: $posts;
+	}
+
+	/**
+	 * Get videos matching condition.
+	 *
+	 * @param int $post_id ID of Condition post.
+	 *
+	 * @return array[]|\WP_Error
+	 */
+	public function get_condition_videos( $post_id, $page = 1 ) {
+		$post = get_post( $post_id );
+		if ( ! $post || $this->post_type_name() !== $post->post_type ) {
+			return new \WP_Error( 'invalid_post_type', __( 'Condition not found.', 'tsvc' ) );
+		}
+		$channel_ids = $this->get_channel_ids( $post_id );
+		if ( empty( $channel_ids ) ) {
+			return new \WP_Error( 'no_chanel_ids',  __( 'Channel ID is empty.', 'tsvc' ) );
+		}
+		$conditions = $this->get_post_condition( $post_id );
+		$videos = [];
+		$errors = new \WP_Error();
+		foreach ( $channel_ids as $channel_id ) {
+			$found = tsvideo_search( $channel_id, '' );
+			if ( is_wp_error( $found ) ) {
+				$errors->add( $found->get_error_code(), $found->get_error_message() );
+				continue 1;
+			}
+			if ( empty( $found ) ) {
+				continue 1;
+			}
+			$video_ids = [];
+			foreach ( $found as $f ) {
+				$video_ids[] = $f['id']['videoId'];
+			}
+			$video_details = tsvideo_get( implode( ',', $video_ids ) );
+			if ( is_wp_error( $video_details ) ) {
+				$errors->add( $video_details->get_error_code(), $video_details->get_error_message() );
+				continue 1;
+			}
+			foreach ( $video_details as $v ) {
+				if ( $this->is_matching( $v, $post_id ) ) {
+					$videos[] = $v;
+				}
+			}
+		}
+		return $errors->get_error_messages() ? $errors : $videos;
 	}
 }
