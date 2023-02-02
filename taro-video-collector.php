@@ -20,12 +20,15 @@ require_once __DIR__ . '/vendor/autoload.php';
 add_action( 'plugins_loaded', function() {
 
 	require_once __DIR__ . '/includes/api.php';
+	require_once __DIR__ . '/includes/utilities.php';
 
 	// Post type.
 	\Tarosky\VideoCollector\Model\VideoPostType::get_instance();
 	\Tarosky\VideoCollector\Model\VideoConditions::get_instance();
 	// Setting screen.
 	\Tarosky\VideoCollector\Admin\Settings::get_instance();
+	// Renderer.
+	\Tarosky\VideoCollector\Renderer::get_instance();
 
 	if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		WP_CLI::add_command( 'youtube', \Tarosky\VideoCollector\Command::class );

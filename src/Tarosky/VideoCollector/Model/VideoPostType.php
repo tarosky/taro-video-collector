@@ -328,8 +328,9 @@ class VideoPostType extends PostTypePattern {
 				}
 				$image = $video['snippet']['thumbnails']['medium'];
 				printf(
-					'<a href="%s" rel="noopener noreferrer" target="_blank"><img style="max-width: 120px; height: auto;" src="%s" loading="lazy" width="%d" height="%d" /></a>',
+					'<a href="%s" title="%s" rel="noopener noreferrer" target="_blank"><img style="max-width: 120px; height: auto;" src="%s" loading="lazy" width="%d" height="%d" /></a>',
 					esc_url( $this->get_video_url( $post_id ) ),
+					esc_attr__( 'Open in YouTube', 'tsvc' ),
 					esc_url( $image['url'] ),
 					esc_attr( $image['width'] ),
 					esc_attr( $image['height'] )
