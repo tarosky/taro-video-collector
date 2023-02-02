@@ -19,6 +19,8 @@ abstract class PostTypePattern extends SingletonPattern {
 		add_action( 'init', [ $this, 'register' ] );
 		add_action( 'do_meta_boxes', [ $this, 'do_meta_boxes' ] );
 		add_action( 'save_post_' . $this->post_type_name(), [ $this, 'save_post' ], 10, 2 );
+		add_filter( 'manage_' . $this->post_type_name() . '_posts_columns', [ $this, 'posts_columns' ], 10 );
+		add_action( 'manage_' . $this->post_type_name() . '_posts_custom_column', [ $this, 'render_posts_column' ], 10, 2 );
 	}
 
 	/**
@@ -111,6 +113,28 @@ abstract class PostTypePattern extends SingletonPattern {
 	 */
 	protected function nonce_field() {
 		wp_nonce_field( $this->nonce_action, $this->nonce_name, false );
+	}
+
+	/**
+	 * Post custom columns.
+	 *
+	 * @param string[] $columns Add columns.
+	 * @return string[]
+	 */
+	public function posts_columns( $columns ) {
+		return $columns;
+	}
+
+	/**
+	 * Render admin column.
+	 *
+	 * @param string $column  Column name
+	 * @param int    $post_id Post ID.
+	 *
+	 * @return void
+	 */
+	public function render_posts_column( $column, $post_id ) {
+		// Do nothing.
 	}
 
 	/**

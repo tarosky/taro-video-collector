@@ -51,7 +51,14 @@ function tsvideo_playlists( $channel_id ) {
 	return json_decode( $result['body'], true );
 }
 
-
+/**
+ * Search video in channel.
+ *
+ * @param string $channel_id YouTube Channel ID.
+ * @param string $q          Query
+ *
+ * @return array|WP_Error
+ */
 function tsvideo_search( $channel_id, $q ) {
 	$endpoint = tsvideo_get_endpoint( 'search', [
 		'channelId'  => rawurlencode( $channel_id ),
@@ -69,7 +76,7 @@ function tsvideo_search( $channel_id, $q ) {
 }
 
 /**
- * Get video information.
+ * Get video detail information.
  *
  * @param string $id CSV format ids.
  *

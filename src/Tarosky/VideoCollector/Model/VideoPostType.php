@@ -203,13 +203,15 @@ class VideoPostType extends PostTypePattern {
 		}
 		$src = sprintf( 'https://www.youtube.com/embed/%s', $id );
 		$options = wp_parse_args( $options, [
-			'width'  => 640,
-			'height' => 360,
+			'width'   => 640,
+			'height'  => 360,
+			'loading' => 'lazy',
 		] );
 		return sprintf(
-			'<iframe type="text/html" width="%s" height="%s" src="%s" frameborder="0"></iframe>',
+			'<iframe type="text/html" width="%s" height="%s" loading="%s" src="%s" frameborder="0"></iframe>',
 			esc_attr( $options['width'] ),
 			esc_attr( $options['height'] ),
+			esc_attr( $options['loading'] ),
 			esc_url( $src )
 		);
 	}
@@ -299,5 +301,40 @@ class VideoPostType extends PostTypePattern {
 		}, $this->post_type_name() );
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
+	public function posts_columns( $columns ) {
+		$new_columns = [];
+		foreach ( $columns as $key => $label ) {
+			$new_columns[ $key ] = $label;
+			if ( 'title' === $key ) {
+				$new_columns[ 'video' ] = __( 'Video', 'tsvc' );
+			}
+		}
+		return $new_columns;
+	}
 
+	/**
+	 * {@inheritdoc}
+	 */
+	public function render_posts_column( $column, $post_id ) {
+		switch ( $column ) {
+			case 'video':
+				$video = get_post_meta( $post_id, '_video_info', true );
+				if ( empty( $video['snippet']['thumbnails']['medium'] ) ) {
+					echo '<span style="color: lightgray">---</span>';
+					return;
+				}
+				$image = $video['snippet']['thumbnails']['medium'];
+				printf(
+					'<a href="%s" rel="noopener noreferrer" target="_blank"><img style="max-width: 120px; height: auto;" src="%s" loading="lazy" width="%d" height="%d" /></a>',
+					esc_url( $this->get_video_url( $post_id ) ),
+					esc_url( $image['url'] ),
+					esc_attr( $image['width'] ),
+					esc_attr( $image['height'] )
+				);
+				break;
+		}
+	}
 }
