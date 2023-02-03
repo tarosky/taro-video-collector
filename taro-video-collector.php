@@ -29,6 +29,8 @@ add_action( 'plugins_loaded', function() {
 	\Tarosky\VideoCollector\Admin\Settings::get_instance();
 	// Renderer.
 	\Tarosky\VideoCollector\Renderer::get_instance();
+	// Automatic sync
+	\Tarosky\VideoCollector\AutomaticSync::get_instance();
 
 	if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		WP_CLI::add_command( 'youtube', \Tarosky\VideoCollector\Command::class );

@@ -261,6 +261,7 @@ class VideoConditions extends PostTypePattern {
 				$posts[] = get_post( $result );
 			}
 		}
+		update_post_meta( $post_id, '_last_synced', current_time( 'mysql' ) );
 		return $errors->get_error_messages() ? $errors : $posts;
 	}
 
