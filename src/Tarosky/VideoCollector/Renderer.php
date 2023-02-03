@@ -43,7 +43,7 @@ class Renderer extends SingletonPattern {
 	 * @return void
 	 */
 	public function video_list( $args = [] ) {
-		$args = wp_parse_args( $args, [
+		$args       = wp_parse_args( $args, [
 			'number'  => 12,
 			'page'    => 1,
 			'order'   => 'date',
@@ -59,13 +59,45 @@ class Renderer extends SingletonPattern {
 		];
 		switch ( $args['order'] ) {
 			case 'view':
+				$query_args['meta_key'] = '_video_view_count';
+				$query_args['orderby']  = [
+					'meta_value_num' => 'DESC',
+				];
 				break;
 			case 'like':
+				$query_args['meta_key'] = '_video_like_count';
+				$query_args['orderby']  = [
+					'meta_value_num' => 'DESC',
+				];
 				break;
 			default:
 				// Date.
 				$query_args['orderby'] = [ 'date' => 'DESC' ];
 				break;
+		}
+		// Add meta query.
+		if ( ! empty( $args['channel'] ) ) {
+			$channels  = array_filter( array_map( 'trim', explode( ',', $args['channel'] ) ) );
+			$tax_query = [
+				'relation' => 'OR',
+			];
+			foreach ( $channels as $channel ) {
+				$channel = trim( $channel );
+				$query   = [
+					'taxonomy' => VideoPostType::get_instance()->taxonomy_channel,
+				];
+				if ( is_numeric( $channel ) ) {
+					// This is term id.
+					$query['field'] = 'term_id';
+					$channel        = (int) $channel;
+				} else {
+					// This is term name.
+					$query['field'] = 'name';
+				}
+				$query['terms'] = [ $channel ];
+				$tax_query[]    = $query;
+			}
+			$query_args['tax_query'] = $tax_query;
 		}
 		$query = new \WP_Query( $query_args );
 		if ( ! $query->have_posts() ) {

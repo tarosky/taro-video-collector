@@ -32,7 +32,7 @@ function tsvideo_get_api_key() {
  */
 function tsvideo_get_endpoint( $path, $args = [] ) {
 	$endpoint = untrailingslashit( 'https://www.googleapis.com/youtube/v3/' . ltrim( $path, '/' ) );
-	$args = array_merge( $args, [
+	$args     = array_merge( $args, [
 		'key' => rawurlencode( tsvideo_get_api_key() ),
 	] );
 	return add_query_arg( $args, $endpoint );
@@ -44,7 +44,7 @@ function tsvideo_playlists( $channel_id ) {
 		'channelId' => rawurlencode( $channel_id ),
 		'part'      => 'id,snippet,status',
 	] );
-	$result = wp_remote_get( $endpoint );
+	$result   = wp_remote_get( $endpoint );
 	if ( is_wp_error( $result ) ) {
 		return $result;
 	}
@@ -67,7 +67,7 @@ function tsvideo_search( $channel_id, $q ) {
 		'order'      => 'date',
 		'q'          => rawurlencode( $q ),
 	] );
-	$result = wp_remote_get( $endpoint );
+	$result   = wp_remote_get( $endpoint );
 	if ( is_wp_error( $result ) ) {
 		return $result;
 	}
@@ -84,11 +84,11 @@ function tsvideo_search( $channel_id, $q ) {
  */
 function tsvideo_get( $id ) {
 	$endpoint = tsvideo_get_endpoint( 'videos', [
-		'part'       => 'id,snippet,contentDetails,statistics,status',
-		'order'      => 'date',
-		'id'         => $id,
+		'part'  => 'id,snippet,contentDetails,statistics,status',
+		'order' => 'date',
+		'id'    => $id,
 	] );
-	$result = wp_remote_get( $endpoint );
+	$result   = wp_remote_get( $endpoint );
 	if ( is_wp_error( $result ) ) {
 		return $result;
 	}
@@ -108,7 +108,7 @@ function tsvideo_channels( $channel_ids ) {
 		'maxResults' => 50,
 		'id'         => $channel_ids,
 	] );
-	$result = wp_remote_get( $endpoint );
+	$result   = wp_remote_get( $endpoint );
 	if ( is_wp_error( $result ) ) {
 		return $result;
 	}

@@ -4,7 +4,7 @@
 	"minimum-stability": "stable",
 	"license": "GPL-3.0-or-later",
 	"scripts": {
-		"test": [
+		"lint": [
 			"phpcs --standard=phpcs.ruleset.xml $(find ./ -name '*.php')"
 		],
 		"fix": [

@@ -27,17 +27,17 @@ class VideoPostType extends PostTypePattern {
 	 */
 	public function post_type_args() {
 		return [
-			'labels' => [
-				'name' => __( 'Videos', 'tsvc' ),
+			'labels'            => [
+				'name'          => __( 'Videos', 'tsvc' ),
 				'singular_name' => __( 'Video', 'tsvc' ),
 			],
-			'public' => false,
-			'show_ui' => true,
+			'public'            => false,
+			'show_ui'           => true,
 			'show_in_nav_menus' => false,
 			'show_in_admin_bar' => false,
-			'show_in_rest' => false,
-			'menu_icon' => 'dashicons-video-alt3',
-			'supports' => [ 'title', 'excerpt', 'revisions' ],
+			'show_in_rest'      => false,
+			'menu_icon'         => 'dashicons-video-alt3',
+			'supports'          => [ 'title', 'excerpt', 'revisions' ],
 		];
 	}
 
@@ -85,7 +85,7 @@ class VideoPostType extends PostTypePattern {
 		$date                 = new \DateTime( $video['snippet']['publishedAt'] );
 		$args['post_date']    = $date->format( 'Y-m-d H:i:s' );
 		$args['post_status']  = ( 'public' === $video['status']['privacyStatus'] ) ? 'publish' : 'private';
-		$result = wp_insert_post( $args, true );
+		$result               = wp_insert_post( $args, true );
 		if ( is_wp_error( $result ) ) {
 			return $result;
 		}
@@ -122,7 +122,7 @@ class VideoPostType extends PostTypePattern {
 			'post_type'      => $this->post_type,
 			'post_status'    => 'any',
 			'posts_per_page' => 1,
-			'meta_query' => [
+			'meta_query'     => [
 				[
 					'key'   => '_video_id',
 					'value' => $video_id,
@@ -201,7 +201,7 @@ class VideoPostType extends PostTypePattern {
 		if ( ! $id ) {
 			return '';
 		}
-		$src = sprintf( 'https://www.youtube.com/embed/%s', $id );
+		$src     = sprintf( 'https://www.youtube.com/embed/%s', $id );
 		$options = wp_parse_args( $options, [
 			'width'   => 640,
 			'height'  => 360,
@@ -238,14 +238,14 @@ class VideoPostType extends PostTypePattern {
 					table-layout: fixed;
 					border-collapse: collapse;
 				}
-                .tsvc-info-table th {
+				.tsvc-info-table th {
 
 				}
-                .tsvc-info-table td {
+				.tsvc-info-table td {
 					text-align: right;
-                }
+				}
 				.tsvc-info-table th,
-                .tsvc-info-table td {
+				.tsvc-info-table td {
 					padding: 10px;
 					border: 1px solid #ddd;
 				}
@@ -286,16 +286,18 @@ class VideoPostType extends PostTypePattern {
 		add_meta_box( 'youtube-sync', __( 'Sync Information', 'tsvc' ), function( \WP_Post $post ) {
 			?>
 			<p>
-				<label><?php esc_html_e( 'Last Synced', 'tsvc' ) ?></label><br />
+				<label><?php esc_html_e( 'Last Synced', 'tsvc' ); ?></label><br />
 				<input type="text" readonly
-					value="<?php echo esc_attr( get_post_meta( $post->ID, '_last_synced', true ) ) ?>"
-					placeholder="<?php esc_html_e( 'Unknown', 'tsvc' ) ?>" />
+					value="<?php echo esc_attr( get_post_meta( $post->ID, '_last_synced', true ) ); ?>"
+					placeholder="<?php esc_html_e( 'Unknown', 'tsvc' ); ?>" />
 			</p>
 			<p>
-				<label><?php esc_html_e( 'Raw Data', 'tsvc' ) ?></label><br />
-				<textarea readonly rows="10" style="width: 100%; box-sizing: border-box"><?php
+				<label><?php esc_html_e( 'Raw Data', 'tsvc' ); ?></label><br />
+				<textarea readonly rows="10" style="width: 100%; box-sizing: border-box">
+				<?php
 					echo esc_textarea( json_encode( get_post_meta( $post->ID, '_video_info', true ), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) );
-				?></textarea>
+				?>
+				</textarea>
 			</p>
 			<?php
 		}, $this->post_type_name() );
@@ -309,7 +311,7 @@ class VideoPostType extends PostTypePattern {
 		foreach ( $columns as $key => $label ) {
 			$new_columns[ $key ] = $label;
 			if ( 'title' === $key ) {
-				$new_columns[ 'video' ] = __( 'Video', 'tsvc' );
+				$new_columns['video'] = __( 'Video', 'tsvc' );
 			}
 		}
 		return $new_columns;

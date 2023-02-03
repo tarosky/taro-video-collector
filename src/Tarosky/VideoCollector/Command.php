@@ -39,7 +39,7 @@ class Command extends \WP_CLI_Command {
 		} else {
 			echo implode( PHP_EOL . 'OR' . PHP_EOL, array_map( function( $words ) {
 				return 'Including ' . implode( ' AND ', array_map( function( $word ) {
-					return sprintf( "\"%s\"", esc_attr( $word ) );
+					return sprintf( '"%s"', esc_attr( $word ) );
 				}, $words ) );
 			}, $conditions ) );
 		}
@@ -72,7 +72,7 @@ class Command extends \WP_CLI_Command {
 	 */
 	public function conditions( $args ) {
 		$condition = VideoConditions::get_instance();
-		$query = new \WP_Query( [
+		$query     = new \WP_Query( [
 			'post_type'      => $condition->post_type,
 			'post_status'    => 'any',
 			'posts_per_page' => -1,
@@ -111,7 +111,7 @@ class Command extends \WP_CLI_Command {
 	 */
 	public function retrieve( $args ) {
 		list( $post_id ) = $args;
-		$result = VideoConditions::get_instance()->sync( $post_id );
+		$result          = VideoConditions::get_instance()->sync( $post_id );
 		if ( is_wp_error( $result ) ) {
 			\WP_CLI::error( $result->get_error_message() );
 		}
@@ -138,11 +138,11 @@ class Command extends \WP_CLI_Command {
 		if ( empty( $videos ) ) {
 			\WP_CLI::error( 'No video matches.' );
 		}
-		$video_ids = implode( ',', array_map( function( $video ) {
+		$video_ids     = implode( ',', array_map( function( $video ) {
 			return $video['id']['videoId'];
 		}, $videos ) );
 		$video_details = tsvideo_get( $video_ids );
-		$table = new Table();
+		$table         = new Table();
 		$table->setHeaders( [ 'Title', 'URL', 'Date', 'Description' ] );
 		foreach ( $videos as $video ) {
 			$table->addRow( [

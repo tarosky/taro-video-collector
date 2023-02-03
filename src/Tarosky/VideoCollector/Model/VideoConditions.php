@@ -23,17 +23,17 @@ class VideoConditions extends PostTypePattern {
 	 */
 	public function post_type_args() {
 		return [
-			'labels' => [
-				'name' => __( 'Conditions', 'tsvc' ),
+			'labels'            => [
+				'name'          => __( 'Conditions', 'tsvc' ),
 				'singular_name' => __( 'Condition', 'tsvc' ),
 			],
-			'public' => false,
-			'show_ui' => true,
-			'show_in_menu' => 'edit.php?post_type=' . VideoPostType::get_instance()->post_type,
+			'public'            => false,
+			'show_ui'           => true,
+			'show_in_menu'      => 'edit.php?post_type=' . VideoPostType::get_instance()->post_type,
 			'show_in_nav_menus' => false,
 			'show_in_admin_bar' => false,
-			'show_in_rest' => false,
-			'supports' => [ 'title', 'excerpt' ],
+			'show_in_rest'      => false,
+			'supports'          => [ 'title', 'excerpt' ],
 		];
 	}
 
@@ -56,7 +56,7 @@ class VideoConditions extends PostTypePattern {
 						<option value="<?php echo esc_attr( $frequency ); ?>"<?php selected( $frequency, get_post_meta( $post->ID, '_interval', true ) ); ?>>
 							<?php
 							// translators: %d is hour.
-							echo esc_html( sprintf( _n('Once per %d hour', 'Once per %d hours', $frequency, 'tsvc'), $frequency ) );
+							echo esc_html( sprintf( _n( 'Once per %d hour', 'Once per %d hours', $frequency, 'tsvc' ), $frequency ) );
 							?>
 						</option>
 					<?php endforeach; ?>
@@ -67,7 +67,7 @@ class VideoConditions extends PostTypePattern {
 				<label for="tsvc-offset"><?php esc_html_e( 'Offset in Hour', 'tsvc' ); ?></label><br />
 				<select id="tsvc-offset" name="_offset" style="width: 100%; box-sizing: border-box; margin: 10px 0;">
 					<?php foreach ( range( 0, 12 ) as $offset ) : ?>
-						<option value="<?php echo esc_attr( $offset); ?>"<?php selected( $offset, (int) get_post_meta( $post->ID, '_offset', true ) ); ?>>
+						<option value="<?php echo esc_attr( $offset ); ?>"<?php selected( $offset, (int) get_post_meta( $post->ID, '_offset', true ) ); ?>>
 							<?php echo esc_html( $offset ); ?>
 						</option>
 					<?php endforeach; ?>
@@ -79,17 +79,21 @@ class VideoConditions extends PostTypePattern {
 
 			<p style="margin: 20px;">
 				<label for="tsvc-channels"><?php esc_html_e( 'Channel ID', 'tsvc' ); ?></label><br />
-				<textarea id="tsvc-channels" name="_channel_ids" rows="5" style="width: 100%; box-sizing: border-box; margin: 10px 0 5px;"><?php
+				<textarea id="tsvc-channels" name="_channel_ids" rows="5" style="width: 100%; box-sizing: border-box; margin: 10px 0 5px;">
+				<?php
 					echo esc_textarea( get_post_meta( $post->ID, '_channel_ids', true ) );
-				?></textarea>
+				?>
+				</textarea>
 				<span class="description"><?php esc_html_e( 'Enter YouTube channel IDs, 1 in each line.', 'tsvc' ); ?></span>
 			</p>
 
 			<p style="margin: 20px;">
 				<label for="tsvc-search-query"><?php esc_html_e( 'Search Query', 'tsvc' ); ?></label><br />
-				<textarea id="tsvc-search-query" name="_search_query" rows="5" style="width: 100%; box-sizing: border-box; margin: 10px 0 5px;"><?php
+				<textarea id="tsvc-search-query" name="_search_query" rows="5" style="width: 100%; box-sizing: border-box; margin: 10px 0 5px;">
+				<?php
 					echo esc_textarea( get_post_meta( $post->ID, '_search_query', true ) );
-					?></textarea>
+				?>
+					</textarea>
 				<span class="description"><?php esc_html_e( 'Enter query in CSV format, 1 in each line. Words in 1 line are considered as AND search, Each lines are combined as OR search.', 'tsvc' ); ?></span>
 			</p>
 			<?php
@@ -108,13 +112,14 @@ class VideoConditions extends PostTypePattern {
 				<ol>
 					<?php foreach ( $channels as $channel ) : ?>
 					<li>
-						<span><?php echo esc_html( $channel['snippet']['title'] ) ?></span>
+						<span><?php echo esc_html( $channel['snippet']['title'] ); ?></span>
 						(<a href="<?php echo esc_url( sprintf( 'https://www.youtube.com/channel/%s/', $channel['id'] ) ); ?>" rel="noopener noreferrer" target="_blank">YouTube</a>)
 						<code>#<?php echo esc_html( $channel['id'] ); ?></code>
 					</li>
 					<?php endforeach; ?>
 				</ol>
-			<?php endif;
+				<?php
+			endif;
 		}, $this->post_type );
 	}
 
@@ -189,7 +194,7 @@ class VideoConditions extends PostTypePattern {
 					continue 1;
 				}
 				// Is description matches?
-				if ( false !== strpos( $video['snippet']['description'], $word) ) {
+				if ( false !== strpos( $video['snippet']['description'], $word ) ) {
 					$matched++;
 					continue 1;
 				}
@@ -227,7 +232,7 @@ class VideoConditions extends PostTypePattern {
 		$matching_hours = [];
 		while ( 24 > $hour ) {
 			$matching_hours[] = $hour;
-			$hour += $frequency;
+			$hour            += $frequency;
 		}
 		return $matching_hours;
 	}
@@ -256,7 +261,7 @@ class VideoConditions extends PostTypePattern {
 				$posts[] = get_post( $result );
 			}
 		}
-		return $errors->get_error_messages() ? $errors: $posts;
+		return $errors->get_error_messages() ? $errors : $posts;
 	}
 
 	/**
@@ -273,11 +278,11 @@ class VideoConditions extends PostTypePattern {
 		}
 		$channel_ids = $this->get_channel_ids( $post_id );
 		if ( empty( $channel_ids ) ) {
-			return new \WP_Error( 'no_chanel_ids',  __( 'Channel ID is empty.', 'tsvc' ) );
+			return new \WP_Error( 'no_chanel_ids', __( 'Channel ID is empty.', 'tsvc' ) );
 		}
 		$conditions = $this->get_post_condition( $post_id );
-		$videos = [];
-		$errors = new \WP_Error();
+		$videos     = [];
+		$errors     = new \WP_Error();
 		foreach ( $channel_ids as $channel_id ) {
 			$found = tsvideo_search( $channel_id, '' );
 			if ( is_wp_error( $found ) ) {
