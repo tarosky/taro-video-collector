@@ -79,19 +79,19 @@ class VideoConditions extends PostTypePattern {
 
 			<p style="margin: 20px;">
 				<label for="tsvc-channels"><?php esc_html_e( 'Channel ID', 'tsvc' ); ?></label><br />
-				<textarea id="tsvc-channels" name="_channel_ids" rows="5" style="width: 100%; box-sizing: border-box; margin: 10px 0 5px;"
-					><?php
-						echo esc_textarea( get_post_meta( $post->ID, '_channel_ids', true ) );
-					?></textarea>
+				<?php
+				$value = get_post_meta( $post->ID, '_channel_ids', true );
+				?>
+				<textarea id="tsvc-channels" name="_channel_ids" rows="5" style="width: 100%; box-sizing: border-box; margin: 10px 0 5px;"><?php echo esc_textarea( $value ); ?></textarea>
 				<span class="description"><?php esc_html_e( 'Enter YouTube channel IDs, 1 in each line.', 'tsvc' ); ?></span>
 			</p>
 
 			<p style="margin: 20px;">
 				<label for="tsvc-search-query"><?php esc_html_e( 'Search Query', 'tsvc' ); ?></label><br />
-				<textarea id="tsvc-search-query" name="_search_query" rows="5" style="width: 100%; box-sizing: border-box; margin: 10px 0 5px;"
-					><?php
-					echo esc_textarea( get_post_meta( $post->ID, '_search_query', true ) );
-					?></textarea>
+				<?php
+				$value = get_post_meta( $post->ID, '_search_query', true );
+				?>
+				<textarea id="tsvc-search-query" name="_search_query" rows="5" style="width: 100%; box-sizing: border-box; margin: 10px 0 5px;"><?php echo esc_textarea( $value ); ?></textarea>
 				<span class="description"><?php esc_html_e( 'Enter query in CSV format, 1 in each line. Words in 1 line are considered as AND search, Each lines are combined as OR search.', 'tsvc' ); ?></span>
 			</p>
 			<?php
