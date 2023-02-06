@@ -79,21 +79,19 @@ class VideoConditions extends PostTypePattern {
 
 			<p style="margin: 20px;">
 				<label for="tsvc-channels"><?php esc_html_e( 'Channel ID', 'tsvc' ); ?></label><br />
-				<textarea id="tsvc-channels" name="_channel_ids" rows="5" style="width: 100%; box-sizing: border-box; margin: 10px 0 5px;">
-				<?php
-					echo esc_textarea( get_post_meta( $post->ID, '_channel_ids', true ) );
-				?>
-				</textarea>
+				<textarea id="tsvc-channels" name="_channel_ids" rows="5" style="width: 100%; box-sizing: border-box; margin: 10px 0 5px;"
+					><?php
+						echo esc_textarea( get_post_meta( $post->ID, '_channel_ids', true ) );
+					?></textarea>
 				<span class="description"><?php esc_html_e( 'Enter YouTube channel IDs, 1 in each line.', 'tsvc' ); ?></span>
 			</p>
 
 			<p style="margin: 20px;">
 				<label for="tsvc-search-query"><?php esc_html_e( 'Search Query', 'tsvc' ); ?></label><br />
-				<textarea id="tsvc-search-query" name="_search_query" rows="5" style="width: 100%; box-sizing: border-box; margin: 10px 0 5px;">
-				<?php
+				<textarea id="tsvc-search-query" name="_search_query" rows="5" style="width: 100%; box-sizing: border-box; margin: 10px 0 5px;"
+					><?php
 					echo esc_textarea( get_post_meta( $post->ID, '_search_query', true ) );
-				?>
-					</textarea>
+					?></textarea>
 				<span class="description"><?php esc_html_e( 'Enter query in CSV format, 1 in each line. Words in 1 line are considered as AND search, Each lines are combined as OR search.', 'tsvc' ); ?></span>
 			</p>
 			<?php
@@ -120,6 +118,21 @@ class VideoConditions extends PostTypePattern {
 				</ol>
 				<?php
 			endif;
+			// Executing plan.
+			$hours = $this->matching_hours( $post->ID );
+			printf(
+				'<p>%s <strong>%s</strong></p>',
+				esc_html__( 'Sync every day at:', 'tsvc' ),
+				implode( ', ', $hours )
+			);
+			// Sync result.
+			$last_synced = get_post_meta( $post->ID, '_last_synced', true );
+			printf(
+				'<p>%s <strong style="%s">%s</strong>',
+				esc_html__( 'Last Synced:', 'tsvc' ),
+				( $last_synced ? '' : 'color: lightgray' ),
+				( $last_synced ? esc_html( mysql2date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $last_synced ) ) : '---' )
+			);
 		}, $this->post_type );
 	}
 
@@ -166,6 +179,44 @@ class VideoConditions extends PostTypePattern {
 	}
 
 	/**
+	 * Get duration in seconds.
+	 *
+	 * @param string $duration ISO 8061 format string.
+	 *
+	 * @return int
+	 */
+	public function convert_video_duration_to_seconds( $duration ) {
+		$seconds  = 0;
+		$interval = new \DateInterval( $duration );
+		foreach ( [
+			'h' => 60 * 60,
+			'i' => 60,
+			's' => 1,
+		] as $key => $multiplier ) {
+			$seconds += $interval->{$key} * $multiplier;
+		}
+		return $seconds;
+	}
+
+	/**
+	 * Is this short video?
+	 *
+	 * @param array $video Video object.
+	 * @return bool
+	 */
+	public function is_short( $video ) {
+		if ( 60 < $this->convert_video_duration_to_seconds( $video['contentDetails']['duration'] ) ) {
+			// More than 60 seconds.
+			return false;
+		}
+		if ( preg_match( '/#Shorts/ui', $video['snippet']['title'] ) || preg_match( '/#Shorts/ui', $video['snippet']['description'] ) ) {
+			// Explicitly declared this is '#Shorts'
+			return true;
+		}
+		return true;
+	}
+
+	/**
 	 * Is video matches criteria?
 	 *
 	 * @param array $video   Video object.
@@ -176,9 +227,10 @@ class VideoConditions extends PostTypePattern {
 	public function is_matching( $video, $post_id ) {
 		// Is this #shorts?
 		$include_short = apply_filters( 'tsvc_include_shorts', false, $post_id );
-		if ( ! $include_short && ( preg_match( '/#Shorts/u', $video['snippet']['title'] ) || preg_match( '/#Shorts/u', $video['snippet']['description'] ) ) ) {
+		if ( ! $include_short && $this->is_short( $video ) ) {
 			return false;
 		}
+		// Is this more than 60 seconds?
 		// Split in line.
 		$conditions = $this->get_post_condition( $post_id );
 		if ( empty( $conditions ) ) {
@@ -227,7 +279,7 @@ class VideoConditions extends PostTypePattern {
 	 */
 	public function matching_hours( $post_id ) {
 		$offset         = (int) get_post_meta( $post_id, '_offset', true );
-		$frequency      = (int) get_post_meta( $post_id, '_interval', true );
+		$frequency      = max( 1, (int) get_post_meta( $post_id, '_interval', true ) );
 		$hour           = $offset;
 		$matching_hours = [];
 		while ( 24 > $hour ) {
