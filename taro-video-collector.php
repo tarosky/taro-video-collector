@@ -25,6 +25,8 @@ add_action( 'plugins_loaded', function() {
 	// Post type.
 	\Tarosky\VideoCollector\Model\VideoPostType::get_instance();
 	\Tarosky\VideoCollector\Model\VideoConditions::get_instance();
+	// Term editor.
+	\Tarosky\VideoCollector\Admin\TermEditor::get_instance();
 	// Setting screen.
 	\Tarosky\VideoCollector\Admin\Settings::get_instance();
 	// Renderer.

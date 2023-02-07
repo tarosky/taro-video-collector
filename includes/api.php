@@ -66,6 +66,7 @@ function tsvideo_search( $channel_id, $q ) {
 		'maxResults' => 50,
 		'order'      => 'date',
 		'q'          => rawurlencode( $q ),
+		'type'       => 'video',
 	] );
 	$result   = wp_remote_get( $endpoint );
 	if ( is_wp_error( $result ) ) {

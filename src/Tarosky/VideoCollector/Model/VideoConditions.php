@@ -347,7 +347,9 @@ class VideoConditions extends PostTypePattern {
 			}
 			$video_ids = [];
 			foreach ( $found as $f ) {
-				$video_ids[] = $f['id']['videoId'];
+				if ( ! empty( $f['id']['videoId'] ) ) {
+					$video_ids[] = $f['id']['videoId'];
+				}
 			}
 			$video_details = tsvideo_get( implode( ',', $video_ids ) );
 			if ( is_wp_error( $video_details ) ) {
