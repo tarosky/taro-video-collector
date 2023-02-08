@@ -65,3 +65,54 @@ function tsvc_iframe( $args = [], $post = null ) {
 	$post = get_post( $post );
 	return \Tarosky\VideoCollector\Model\VideoPostType::get_instance()->get_video_iframe( $post->ID, $args );
 }
+
+/**
+ * Get post channel detail.
+ *
+ * @return array
+ */
+function tsvc_channel_detail( $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post ) {
+		return [];
+	}
+	$terms = get_the_terms( $post, \Tarosky\VideoCollector\Model\VideoPostType::get_instance()->taxonomy_channel );
+	if ( ! $terms || is_wp_error( $terms ) ) {
+		return [];
+	}
+	foreach ( $terms as $term ) {
+		$meta = get_term_meta( $term->term_id, '_channel_data', true );
+		if ( $meta ) {
+			return $meta;
+		}
+	}
+	return [];
+}
+
+/**
+ * Get video published at.
+ *
+ * @param string           $format Date format.
+ * @param null|int|WP_Post $post   Post object.
+ *
+ * @return string
+ * @throws Exception
+ */
+function tsvc_video_published_at( $format = '', $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post ) {
+		return '';
+	}
+	$video = get_post_meta( $post->ID, '_video_info', true );
+	if ( empty( $video['snippet']['publishedAt'] ) ) {
+		return '';
+	}
+	if ( 'raw' === $format ) {
+		return $video['snippet']['publishedAt'];
+	}
+	if ( ! $format ) {
+		$format = get_option( 'date_format' );
+	}
+	$date = new DateTime( $video['snippet']['publishedAt'] );
+	return $date->format( $format );
+}

@@ -30,7 +30,7 @@ class AutomaticSync extends SingletonPattern {
 	 */
 	public function register_cron() {
 		if ( ! wp_next_scheduled( self::EVENT_NAME ) ) {
-			wp_schedule_event( current_time( 'timestamp', true ), 'hourly', self::EVENT_NAME );
+			wp_schedule_event( time(), 'hourly', self::EVENT_NAME );
 		}
 	}
 

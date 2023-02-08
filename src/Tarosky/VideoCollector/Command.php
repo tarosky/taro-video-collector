@@ -4,7 +4,9 @@ namespace Tarosky\VideoCollector;
 
 
 use cli\Table;
+use Tarosky\VideoCollector\Admin\TermEditor;
 use Tarosky\VideoCollector\Model\VideoConditions;
+use Tarosky\VideoCollector\Model\VideoPostType;
 
 /**
  * Youtube API Utility.
@@ -155,4 +157,29 @@ class Command extends \WP_CLI_Command {
 		$table->display();
 	}
 
+	/**
+	 * Sync channel data.
+	 *
+	 * @return void
+	 */
+	public function sync_channels() {
+		$result = TermEditor::get_instance()->sync_channels();
+		if ( $result->has_error() ) {
+			$errors = $result->get_error_messages();
+			\WP_CLI::warning( sprintf( '%d errors', count( $errors ) ) );
+			foreach ( $errors as $error ) {
+				\WP_CLI::warning( $error );
+			}
+		}
+		$term_ids = $result->get_result();
+		if ( empty( $term_ids ) ) {
+			\WP_CLI::error( 'Nothing updated.' );
+		}
+		$table = new Table();
+		$table->setHeaders( [ 'ID', 'Name', 'Channel ID' ] );
+		foreach ( $term_ids as $term_id ) {
+			$table->addRow( [ $term_id, get_term( $term_id, VideoPostType::get_instance()->taxonomy_channel )->name, get_term_meta( $term_id, '_channel_id', true ) ] );
+		}
+		$table->display();
+	}
 }

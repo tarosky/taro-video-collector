@@ -17,7 +17,11 @@ class Renderer extends SingletonPattern {
 		// Register hooks.
 		add_shortcode( 'videos', function( $attrs = [], $content = '' ) {
 			ob_start();
-			$this->video_list( $attrs );
+			$args = [];
+			if ( $content ) {
+				$args['empty'] = $content;
+			}
+			$this->video_list( array_merge( $args, $attrs ) );
 			$rendered = ob_get_contents();
 			ob_end_clean();
 			return $rendered;
@@ -44,12 +48,20 @@ class Renderer extends SingletonPattern {
 	 */
 	public function video_list( $args = [] ) {
 		$args       = wp_parse_args( $args, [
-			'number'  => 12,
-			'page'    => 1,
-			'order'   => 'date',
-			'channel' => '',
-			'wrapper' => 'video-list',
-			'empty'   => '',
+			'number'      => 12,
+			'page'        => 1,
+			'order'       => 'date',
+			'channel'     => '',
+			'wrapper'     => 'video-list',
+			'empty'       => '',
+			'width'       => 1920,
+			'height'      => 1080,
+			'title'       => '1',
+			'date'        => '1',
+			'publisher'   => '1',
+			'icon'        => '1',
+			'size'        => 'default',
+			'date_format' => '',
 		] );
 		$query_args = [
 			'post_type'      => VideoPostType::get_instance()->post_type,
@@ -102,13 +114,16 @@ class Renderer extends SingletonPattern {
 		$query = new \WP_Query( $query_args );
 		if ( ! $query->have_posts() ) {
 			// No post found.
+			if ( ! empty( $args['empty'] ) ) {
+				echo wp_kses_post( $args['empty'] );
+			}
 			return;
 		}
 		printf( '<div class="%s">', esc_attr( $args['wrapper'] ) );
 		do_action( 'tsvc_before_video_loop', $query );
 		while ( $query->have_posts() ) {
 			$query->the_post();
-			tsvc_get_template_part( 'video-list' );
+			tsvc_get_template_part( 'video-list', '', $args );
 		}
 		wp_reset_postdata();
 		do_action( 'tsvc_after_video_loop', $query );

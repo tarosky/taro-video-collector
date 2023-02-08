@@ -3,6 +3,7 @@
 namespace Tarosky\VideoCollector\Admin;
 
 
+use Tarosky\VideoCollector\Model\ApiResult;
 use Tarosky\VideoCollector\Model\VideoPostType;
 use Tarosky\VideoCollector\Pattern\SingletonPattern;
 
@@ -10,6 +11,8 @@ use Tarosky\VideoCollector\Pattern\SingletonPattern;
  * Extends editor.
  */
 class TermEditor extends SingletonPattern {
+
+	const CRON_EVENT = 'tsvc_sync_terms';
 
 	/**
 	 * Taxonomy name.
@@ -28,6 +31,19 @@ class TermEditor extends SingletonPattern {
 	protected function init() {
 		add_action( $this->taxonomy() . '_edit_form_fields', [ $this, 'edit_form' ], 10, 2 );
 		add_action( 'edit_' . $this->taxonomy(), [ $this, 'term_updated' ], 10, 2 );
+		add_action( 'init', [ $this, 'register_cron' ] );
+		add_action( self::CRON_EVENT, [ $this, 'sync_channels' ] );
+	}
+
+	/**
+	 * Register cron.
+	 *
+	 * @return void
+	 */
+	public function register_cron() {
+		if ( ! wp_next_scheduled( self::CRON_EVENT ) ) {
+			wp_schedule_event( time(), 'hourly', self::CRON_EVENT );
+		}
 	}
 
 	/**
@@ -116,8 +132,55 @@ class TermEditor extends SingletonPattern {
 		return true;
 	}
 
-
-	public function sync_channels( $channel_ids ) {
-		
+	/**
+	 * Sync channels via API.
+	 *
+	 * @return ApiResult
+	 */
+	public function sync_channels() {
+		$result   = new ApiResult();
+		$paged    = 1;
+		$has_next = true;
+		// Get all channels.
+		while ( $has_next ) {
+			$query_args = [
+				'taxonomy'   => $this->taxonomy(),
+				'hide_empty' => false,
+				'number'     => 50,
+				'offset'     => 50 * ( $paged - 1 ),
+				'meta_query' => [
+					[
+						'key'     => '_channel_id',
+						'value'   => '',
+						'compare' => '!=',
+					],
+				],
+			];
+			$term_query = new \WP_Term_Query( $query_args );
+			$terms      = $term_query->get_terms();
+			$paged++;
+			if ( $terms ) {
+				$channel_ids = [];
+				foreach ( $terms as $term ) {
+					$channel_ids[ get_term_meta( $term->term_id, '_channel_id', true ) ] = $term->term_id;
+				}
+				$channels = tsvideo_channels( implode( ',', array_keys( $channel_ids ) ) );
+				if ( is_wp_error( $channels ) ) {
+					$result->add_error( $channels );
+				} else {
+					foreach ( $channels as $channel ) {
+						$term_id = $channel_ids[ $channel['id'] ];
+						update_term_meta( $term_id, '_channel_data', $channel );
+						update_term_meta( $term_id, '_last_synced', current_time( 'mysql' ) );
+						$result->add_results( $term_id );
+					}
+				}
+			} else {
+				// No terms.
+				$has_next = false;
+				break;
+			}
+		}
+		return $result;
 	}
 }
