@@ -294,7 +294,7 @@ class VideoPostType extends PostTypePattern {
 			<p>
 				<label><?php esc_html_e( 'Raw Data', 'tsvc' ); ?></label><br />
 				<?php
-				$raw_data =  json_encode( get_post_meta( $post->ID, '_video_info', true ), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE );
+				$raw_data = json_encode( get_post_meta( $post->ID, '_video_info', true ), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE );
 				?>
 				<textarea readonly rows="10" style="width: 100%; box-sizing: border-box"><?php echo esc_textarea( $raw_data ); ?></textarea>
 			</p>

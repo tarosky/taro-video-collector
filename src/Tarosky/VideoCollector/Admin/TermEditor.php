@@ -96,7 +96,7 @@ class TermEditor extends SingletonPattern {
 			</td>
 		</tr>
 		<tr>
-			<th><?php  esc_html_e( 'Raw Data', 'tsvc' );?></th>
+			<th><?php esc_html_e( 'Raw Data', 'tsvc' ); ?></th>
 			<td>
 				<?php
 				$data = get_term_meta( $term->term_id, '_channel_data', true );

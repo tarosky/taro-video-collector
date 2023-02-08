@@ -30,14 +30,16 @@ $channel = tsvc_channel_detail();
 	</div>
 
 	<div class="video-list-meta">
-		<?php if ( $args['icon'] && ! empty( $channel['snippet']['thumbnails'][ $args['size'] ] ) ) {
+		<?php
+		if ( $args['icon'] && ! empty( $channel['snippet']['thumbnails'][ $args['size'] ] ) ) {
 			printf(
 				'<img src="%s" width="%d" height="%d" alt="" class="video-list-icon" />',
 				esc_url( $channel['snippet']['thumbnails'][ $args['size'] ]['url'] ),
 				$channel['snippet']['thumbnails'][ $args['size'] ]['width'],
 				$channel['snippet']['thumbnails'][ $args['size'] ]['height']
 			);
-		} ?>
+		}
+		?>
 
 		<div class="video-list-meta-info">
 			<?php if ( $args['title'] ) : ?>
