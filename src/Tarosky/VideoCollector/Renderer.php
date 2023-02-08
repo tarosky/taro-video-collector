@@ -36,7 +36,8 @@ class Renderer extends SingletonPattern {
 	 * @return void
 	 */
 	public function enqueue_assets() {
-		wp_enqueue_style( 'tsvc-style', tsvc_root_directory_uri() . '/assets/css/tsvc.css', [], '1.0.0' );
+		$hash = md5_file( tsvc_root_directory() . '/assets/css/tsvc.css' );
+		wp_enqueue_style( 'tsvc-style', tsvc_root_directory_uri() . '/assets/css/tsvc.css', [], $hash );
 	}
 
 	/**

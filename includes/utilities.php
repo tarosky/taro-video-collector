@@ -15,6 +15,15 @@ function tsvc_root_directory_uri() {
 }
 
 /**
+ * Get root directory.
+ *
+ * @return string
+ */
+function tsvc_root_directory() {
+	return dirname( __DIR__ );
+}
+
+/**
  * Load template including plugin template.
  *
  * @param string $slug   String template.
