@@ -1,0 +1,220 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Taro Video Collector\n"
+"POT-Creation-Date: 2023-02-08 17:32+0900\n"
+"PO-Revision-Date: 2023-02-08 17:40+0900\n"
+"Last-Translator: Takahashi Fumiki <takahashi.fumiki@hametuha.co.jp>\n"
+"Language-Team: Takahashi Fumiki <takahashi.fumiki@hametuha.co.jp>\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.2.2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: taro-video-collector.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.min.js\n"
+"X-Poedit-SearchPathExcluded-1: node_modules\n"
+"X-Poedit-SearchPathExcluded-2: wordpress\n"
+"X-Poedit-SearchPathExcluded-3: vendor\n"
+
+#: src/Tarosky/VideoCollector/Admin/Settings.php:28
+msgid "API Setting"
+msgstr "API設定"
+
+#: src/Tarosky/VideoCollector/Admin/Settings.php:39
+msgid "YouTube API Setting"
+msgstr "YouTube API設定"
+
+#: src/Tarosky/VideoCollector/Admin/Settings.php:58
+msgid "YouTube API"
+msgstr "YouTube API"
+
+#: src/Tarosky/VideoCollector/Admin/Settings.php:62
+msgid "API Key"
+msgstr "APIキー"
+
+#: src/Tarosky/VideoCollector/Admin/Settings.php:67
+msgid ""
+"Constant <code>YOUTUBE_API_KEY</code> is defined, so it prior to the input "
+"field value above."
+msgstr ""
+"定数<code>YOUTUBE_API_KEY</code>が定義されているため、これを入力フィールドの"
+"値より優先します。 is defined, so it prior to the input field value above."
+
+#: src/Tarosky/VideoCollector/Admin/TermEditor.php:84
+#: src/Tarosky/VideoCollector/Model/VideoConditions.php:81
+msgid "Channel ID"
+msgstr "チャンネルID"
+
+#: src/Tarosky/VideoCollector/Admin/TermEditor.php:89
+msgid "If you change channel ID after the automatic synchronization."
+msgstr "自動更新されたチャンネルIDを変更しないでください。"
+
+#: src/Tarosky/VideoCollector/Admin/TermEditor.php:93
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:289
+msgid "Last Synced"
+msgstr "最終更新"
+
+#: src/Tarosky/VideoCollector/Admin/TermEditor.php:99
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:295
+msgid "Raw Data"
+msgstr "生データ"
+
+#: src/Tarosky/VideoCollector/Model/VideoConditions.php:27
+msgid "Conditions"
+msgstr "条件"
+
+#: src/Tarosky/VideoCollector/Model/VideoConditions.php:28
+#: src/Tarosky/VideoCollector/Model/VideoConditions.php:49
+msgid "Condition"
+msgstr "条件"
+
+#: src/Tarosky/VideoCollector/Model/VideoConditions.php:53
+msgid "Update Frequency"
+msgstr "更新頻度"
+
+#: src/Tarosky/VideoCollector/Model/VideoConditions.php:59
+#, php-format
+msgid "Once per %d hour"
+msgid_plural "Once per %d hours"
+msgstr[0] "%d時間に1回"
+
+#: src/Tarosky/VideoCollector/Model/VideoConditions.php:67
+msgid "Offset in Hour"
+msgstr "ずらす時間"
+
+#: src/Tarosky/VideoCollector/Model/VideoConditions.php:76
+msgid ""
+"If you set 1 as offset and set every 6 hours, the condition runs at 1, 7, "
+"13, and 19."
+msgstr ""
+"1をずらす時間とし、毎6時間に設定すると、この条件は1時、7時、13時、19時に実行"
+"されます。"
+
+#: src/Tarosky/VideoCollector/Model/VideoConditions.php:86
+msgid "Enter YouTube channel IDs, 1 in each line."
+msgstr "1行ごとにYouTubeチャンネルIDを入力してください。"
+
+#: src/Tarosky/VideoCollector/Model/VideoConditions.php:90
+msgid "Search Query"
+msgstr "検索クエリ"
+
+#: src/Tarosky/VideoCollector/Model/VideoConditions.php:95
+msgid ""
+"Enter query in CSV format, 1 in each line. Words in 1 line are considered as "
+"AND search, Each lines are combined as OR search."
+msgstr ""
+"1行ごとにCSVフォーマットで入力してください。1行ごとの単語はAND検索として、各"
+"行はOR検索として結合されます。"
+
+#: src/Tarosky/VideoCollector/Model/VideoConditions.php:101
+msgid "Validation"
+msgstr "検証"
+
+#: src/Tarosky/VideoCollector/Model/VideoConditions.php:104
+msgid "Channel Result"
+msgstr "チャンネルの結果"
+
+#: src/Tarosky/VideoCollector/Model/VideoConditions.php:106
+msgid "No channel set."
+msgstr "チャンネルが設定されていません。"
+
+#: src/Tarosky/VideoCollector/Model/VideoConditions.php:125
+msgid "Sync every day at:"
+msgstr "同期時刻："
+
+#: src/Tarosky/VideoCollector/Model/VideoConditions.php:132
+msgid "Last Synced:"
+msgstr "最終更新："
+
+#: src/Tarosky/VideoCollector/Model/VideoConditions.php:330
+msgid "Condition not found."
+msgstr "条件が見つかりませんでした。"
+
+#: src/Tarosky/VideoCollector/Model/VideoConditions.php:334
+msgid "Channel ID is empty."
+msgstr "チャンネルIDが空です。"
+
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:31
+msgid "Videos"
+msgstr "動画"
+
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:32
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:313
+msgid "Video"
+msgstr "動画"
+
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:51
+msgid "Channel"
+msgstr "チャンネル"
+
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:60
+msgid "Source"
+msgstr "出典"
+
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:78
+msgid "Specified post is not a video."
+msgstr "指定された投稿は動画ではありません。"
+
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:148
+msgid "Failed to get channel "
+msgstr "チャンネル取得に失敗しました。"
+
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:224
+msgid "Video Information"
+msgstr "動画情報"
+
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:227
+msgid "Failed to find a valid video URL."
+msgstr "有効な動画URLを見つけられませんでした。"
+
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:259
+msgid "View"
+msgstr "閲覧数"
+
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:260
+msgid "Like"
+msgstr "いいね"
+
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:261
+msgid "Dislike"
+msgstr "よくないね"
+
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:262
+msgid "Favorite"
+msgstr "お気に入り"
+
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:286
+msgid "Sync Information"
+msgstr "同期情報"
+
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:292
+msgid "Unknown"
+msgstr "不明"
+
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:334
+msgid "Open in YouTube"
+msgstr "YouTubeで見る"
+
+#. Plugin Name of the plugin/theme
+msgid "Taro Video Collector"
+msgstr "Taro Video Collector"
+
+#. Description of the plugin/theme
+msgid "Collect specified video"
+msgstr "指定された動画を収集します。"
+
+#. Author of the plugin/theme
+msgid "TAROSKY INC."
+msgstr "タロスカイ株式会社"
+
+#. Author URI of the plugin/theme
+msgid "https://tarosky.co.jp"
+msgstr ""

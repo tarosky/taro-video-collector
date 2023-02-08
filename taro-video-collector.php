@@ -19,6 +19,8 @@ require_once __DIR__ . '/vendor/autoload.php';
 // Initialize plugin.
 add_action( 'plugins_loaded', function() {
 
+	load_plugin_textdomain( 'tsvc', false, basename( __DIR__ ) . '/languages' );
+
 	require_once __DIR__ . '/includes/api.php';
 	require_once __DIR__ . '/includes/utilities.php';
 
