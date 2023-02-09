@@ -52,8 +52,8 @@ class VideoPostType extends PostTypePattern {
 		];
 		if ( $this->public_flag() ) {
 			// Post type is public.
-			$args['public'] = true;
-			$args['rewrite']   = [
+			$args['public']  = true;
+			$args['rewrite'] = [
 				'with_front' => false,
 				'slug'       => get_option( 'tsvc_video_rewrite_slug' ) ?: $this->post_type_name(),
 			];

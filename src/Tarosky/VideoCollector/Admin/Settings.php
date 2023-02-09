@@ -56,10 +56,7 @@ class Settings extends SingletonPattern {
 	public function register_admin_setting() {
 		// Add section.
 		add_settings_section( 'tsvc-api-setting', __( 'YouTube API', 'tsvc' ), function() {
-			printf(
-				'<p class="description">%s</p>',
-				esc_html__( '', 'tsvc' )
-			);
+
 		}, 'tsvc-setting' );
 		// Add setting field.
 		add_settings_field( 'tsvideo_youtube_api_key', __( 'API Key', 'tsvc' ), function() {
