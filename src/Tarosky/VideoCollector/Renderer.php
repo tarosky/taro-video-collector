@@ -208,7 +208,7 @@ class Renderer extends SingletonPattern {
 		$attr['height']  = $image['height'];
 		$attr['src']     = $image['url'];
 		$attr['class']   = "attachment-{$size} ";
-		$attrs = [];
+		$attrs           = [];
 		foreach ( $attr as $key => $value ) {
 			$attrs[] = sprintf( '%s="%s"', $key, esc_attr( $value ) );
 		}
@@ -233,7 +233,7 @@ class Renderer extends SingletonPattern {
 		}
 		$excerpt_length = (int) _x( '55', 'excerpt_length' );
 		$excerpt_length = (int) apply_filters( 'excerpt_length', $excerpt_length );
-		$excerpt_more = apply_filters( 'excerpt_more', ' ' . '[&hellip;]' );
+		$excerpt_more   = apply_filters( 'excerpt_more', ' ' . '[&hellip;]' );
 		return wp_trim_words( $excerpt, $excerpt_length, $excerpt_more );
 	}
 
