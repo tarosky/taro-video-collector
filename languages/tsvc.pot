@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Taro Video Collector\n"
-"POT-Creation-Date: 2023-02-08 17:32+0900\n"
+"POT-Creation-Date: 2023-02-09 22:56+0900\n"
 "PO-Revision-Date: 2023-02-08 17:31+0900\n"
 "Last-Translator: Takahashi Fumiki <takahashi.fumiki@hametuha.co.jp>\n"
 "Language-Team: Takahashi Fumiki <takahashi.fumiki@hametuha.co.jp>\n"
@@ -25,25 +25,50 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-3: vendor\n"
 
 #: src/Tarosky/VideoCollector/Admin/Settings.php:28
-msgid "API Setting"
+#: src/Tarosky/VideoCollector/Admin/Settings.php:39
+msgid "YouTube Integration Setting"
 msgstr ""
 
-#: src/Tarosky/VideoCollector/Admin/Settings.php:39
-msgid "YouTube API Setting"
+#: src/Tarosky/VideoCollector/Admin/Settings.php:28
+msgid "Setting"
 msgstr ""
 
 #: src/Tarosky/VideoCollector/Admin/Settings.php:58
 msgid "YouTube API"
 msgstr ""
 
-#: src/Tarosky/VideoCollector/Admin/Settings.php:62
+#: src/Tarosky/VideoCollector/Admin/Settings.php:65
 msgid "API Key"
 msgstr ""
 
-#: src/Tarosky/VideoCollector/Admin/Settings.php:67
+#: src/Tarosky/VideoCollector/Admin/Settings.php:70
 msgid ""
 "Constant <code>YOUTUBE_API_KEY</code> is defined, so it prior to the input "
 "field value above."
+msgstr ""
+
+#: src/Tarosky/VideoCollector/Admin/Settings.php:77
+msgid "Appearance"
+msgstr ""
+
+#: src/Tarosky/VideoCollector/Admin/Settings.php:81
+msgid "Video Post Type"
+msgstr ""
+
+#: src/Tarosky/VideoCollector/Admin/Settings.php:83
+msgid "Private post type displayed only via blocks or shortcodes"
+msgstr ""
+
+#: src/Tarosky/VideoCollector/Admin/Settings.php:84
+msgid "Public post type with archive and single page."
+msgstr ""
+
+#: src/Tarosky/VideoCollector/Admin/Settings.php:85
+msgid "Public post type only with archive page and single pages are hidden."
+msgstr ""
+
+#: src/Tarosky/VideoCollector/Admin/Settings.php:97
+msgid "Rewrite Slugs"
 msgstr ""
 
 #: src/Tarosky/VideoCollector/Admin/TermEditor.php:84
@@ -56,12 +81,12 @@ msgid "If you change channel ID after the automatic synchronization."
 msgstr ""
 
 #: src/Tarosky/VideoCollector/Admin/TermEditor.php:93
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:289
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:318
 msgid "Last Synced"
 msgstr ""
 
 #: src/Tarosky/VideoCollector/Admin/TermEditor.php:99
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:295
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:324
 msgid "Raw Data"
 msgstr ""
 
@@ -137,65 +162,70 @@ msgstr ""
 msgid "Channel ID is empty."
 msgstr ""
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:31
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:41
 msgid "Videos"
 msgstr ""
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:32
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:313
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:42
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:342
 msgid "Video"
 msgstr ""
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:51
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:79
 msgid "Channel"
 msgstr ""
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:60
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:89
 msgid "Source"
 msgstr ""
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:78
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:107
 msgid "Specified post is not a video."
 msgstr ""
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:148
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:177
 msgid "Failed to get channel "
 msgstr ""
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:224
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:253
 msgid "Video Information"
 msgstr ""
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:227
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:256
 msgid "Failed to find a valid video URL."
 msgstr ""
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:259
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:288
 msgid "View"
 msgstr ""
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:260
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:289
 msgid "Like"
 msgstr ""
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:261
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:290
 msgid "Dislike"
 msgstr ""
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:262
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:291
 msgid "Favorite"
 msgstr ""
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:286
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:315
 msgid "Sync Information"
 msgstr ""
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:292
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:321
 msgid "Unknown"
 msgstr ""
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:334
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:363
 msgid "Open in YouTube"
+msgstr ""
+
+#: src/Tarosky/VideoCollector/Renderer.php:234
+msgctxt "excerpt_length"
+msgid "55"
 msgstr ""
 
 #. Plugin Name of the plugin/theme

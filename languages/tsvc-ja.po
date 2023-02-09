@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Taro Video Collector\n"
-"POT-Creation-Date: 2023-02-08 17:32+0900\n"
-"PO-Revision-Date: 2023-02-08 17:40+0900\n"
+"POT-Creation-Date: 2023-02-09 22:56+0900\n"
+"PO-Revision-Date: 2023-02-09 22:58+0900\n"
 "Last-Translator: Takahashi Fumiki <takahashi.fumiki@hametuha.co.jp>\n"
 "Language-Team: Takahashi Fumiki <takahashi.fumiki@hametuha.co.jp>\n"
 "Language: ja\n"
@@ -25,28 +25,53 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-3: vendor\n"
 
 #: src/Tarosky/VideoCollector/Admin/Settings.php:28
-msgid "API Setting"
-msgstr "API設定"
-
 #: src/Tarosky/VideoCollector/Admin/Settings.php:39
-msgid "YouTube API Setting"
-msgstr "YouTube API設定"
+msgid "YouTube Integration Setting"
+msgstr "YouTube 連携設定"
+
+#: src/Tarosky/VideoCollector/Admin/Settings.php:28
+msgid "Setting"
+msgstr "設定"
 
 #: src/Tarosky/VideoCollector/Admin/Settings.php:58
 msgid "YouTube API"
 msgstr "YouTube API"
 
-#: src/Tarosky/VideoCollector/Admin/Settings.php:62
+#: src/Tarosky/VideoCollector/Admin/Settings.php:65
 msgid "API Key"
 msgstr "APIキー"
 
-#: src/Tarosky/VideoCollector/Admin/Settings.php:67
+#: src/Tarosky/VideoCollector/Admin/Settings.php:70
 msgid ""
 "Constant <code>YOUTUBE_API_KEY</code> is defined, so it prior to the input "
 "field value above."
 msgstr ""
 "定数<code>YOUTUBE_API_KEY</code>が定義されているため、これを入力フィールドの"
 "値より優先します。 is defined, so it prior to the input field value above."
+
+#: src/Tarosky/VideoCollector/Admin/Settings.php:77
+msgid "Appearance"
+msgstr "外観"
+
+#: src/Tarosky/VideoCollector/Admin/Settings.php:81
+msgid "Video Post Type"
+msgstr "ビデオの投稿タイプ"
+
+#: src/Tarosky/VideoCollector/Admin/Settings.php:83
+msgid "Private post type displayed only via blocks or shortcodes"
+msgstr "投稿タイプを非公開にし、ブロックやショートコードでのみ表示"
+
+#: src/Tarosky/VideoCollector/Admin/Settings.php:84
+msgid "Public post type with archive and single page."
+msgstr "一覧とシングルページを持つ投稿タイプ"
+
+#: src/Tarosky/VideoCollector/Admin/Settings.php:85
+msgid "Public post type only with archive page and single pages are hidden."
+msgstr "アーカイブページが公開でシングルページが表示されない投稿タイプ"
+
+#: src/Tarosky/VideoCollector/Admin/Settings.php:97
+msgid "Rewrite Slugs"
+msgstr "リライトスラッグ"
 
 #: src/Tarosky/VideoCollector/Admin/TermEditor.php:84
 #: src/Tarosky/VideoCollector/Model/VideoConditions.php:81
@@ -58,12 +83,12 @@ msgid "If you change channel ID after the automatic synchronization."
 msgstr "自動更新されたチャンネルIDを変更しないでください。"
 
 #: src/Tarosky/VideoCollector/Admin/TermEditor.php:93
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:289
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:318
 msgid "Last Synced"
 msgstr "最終更新"
 
 #: src/Tarosky/VideoCollector/Admin/TermEditor.php:99
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:295
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:324
 msgid "Raw Data"
 msgstr "生データ"
 
@@ -142,66 +167,71 @@ msgstr "条件が見つかりませんでした。"
 msgid "Channel ID is empty."
 msgstr "チャンネルIDが空です。"
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:31
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:41
 msgid "Videos"
 msgstr "動画"
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:32
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:313
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:42
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:342
 msgid "Video"
 msgstr "動画"
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:51
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:79
 msgid "Channel"
 msgstr "チャンネル"
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:60
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:89
 msgid "Source"
 msgstr "出典"
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:78
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:107
 msgid "Specified post is not a video."
 msgstr "指定された投稿は動画ではありません。"
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:148
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:177
 msgid "Failed to get channel "
 msgstr "チャンネル取得に失敗しました。"
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:224
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:253
 msgid "Video Information"
 msgstr "動画情報"
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:227
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:256
 msgid "Failed to find a valid video URL."
 msgstr "有効な動画URLを見つけられませんでした。"
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:259
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:288
 msgid "View"
 msgstr "閲覧数"
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:260
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:289
 msgid "Like"
 msgstr "いいね"
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:261
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:290
 msgid "Dislike"
 msgstr "よくないね"
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:262
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:291
 msgid "Favorite"
 msgstr "お気に入り"
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:286
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:315
 msgid "Sync Information"
 msgstr "同期情報"
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:292
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:321
 msgid "Unknown"
 msgstr "不明"
 
-#: src/Tarosky/VideoCollector/Model/VideoPostType.php:334
+#: src/Tarosky/VideoCollector/Model/VideoPostType.php:363
 msgid "Open in YouTube"
 msgstr "YouTubeで見る"
+
+#: src/Tarosky/VideoCollector/Renderer.php:234
+msgctxt "excerpt_length"
+msgid "55"
+msgstr "55"
 
 #. Plugin Name of the plugin/theme
 msgid "Taro Video Collector"
@@ -217,4 +247,4 @@ msgstr "タロスカイ株式会社"
 
 #. Author URI of the plugin/theme
 msgid "https://tarosky.co.jp"
-msgstr ""
+msgstr "https://tarosky.co.jp"
