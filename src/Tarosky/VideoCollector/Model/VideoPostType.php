@@ -10,52 +10,81 @@ use Tarosky\VideoCollector\Pattern\PostTypePattern;
  */
 class VideoPostType extends PostTypePattern {
 
+
 	/**
 	 * @var string Taxonomy name of Channel.
 	 */
 	public $taxonomy_channel = 'video-channel';
 
 	/**
+	 * Is post type public?
+	 *
+	 * @return int
+	 */
+	public function public_flag() {
+		return (int) get_option( 'tsvc_video_is_public' );
+	}
+
+	/**
 	 * {@inheritdoc}
 	 */
 	protected function post_type_name() {
-		return 'videos';
+		return apply_filters( 'tsvc_video_post_type_name', 'videos' );
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function post_type_args() {
-		return [
+		$args = [
 			'labels'            => [
 				'name'          => __( 'Videos', 'tsvc' ),
 				'singular_name' => __( 'Video', 'tsvc' ),
 			],
 			'public'            => false,
 			'show_ui'           => true,
+			'has_archive'       => true,
 			'show_in_nav_menus' => false,
 			'show_in_admin_bar' => false,
 			'show_in_rest'      => false,
 			'menu_icon'         => 'dashicons-video-alt3',
 			'supports'          => [ 'title', 'excerpt', 'revisions' ],
 		];
+		if ( $this->public_flag() ) {
+			// Post type is public.
+			$args['public'] = true;
+			$args['rewrite']   = [
+				'with_front' => false,
+				'slug'       => get_option( 'tsvc_video_rewrite_slug' ) ?: $this->post_type_name(),
+			];
+			if ( 1 === $this->public_flag() ) {
+				// This should have an editor.
+				$args['supports'][]   = 'editor';
+				$args['supports'][]   = 'post-thumbnail';
+				$args['show_in_rest'] = true;
+			}
+		}
+
+		return apply_filters( 'tsvc_video_post_type_args', $args );
 	}
 
 	public function register_taxonomies() {
 		register_taxonomy( $this->taxonomy_channel, [ $this->post_type_name() ], [
-			'public'            => false,
+			'public'            => (bool) $this->public_flag(),
 			'show_ui'           => true,
 			'hierarchical'      => true,
 			'show_admin_column' => true,
+			'show_in_rest'      => true,
 			'labels'            => [
 				'name' => __( 'Channel', 'tsvc' ),
 			],
 		] );
 		register_taxonomy( 'video-source', [ $this->post_type_name() ], [
-			'public'            => false,
+			'public'            => (bool) $this->public_flag(),
 			'show_ui'           => true,
 			'hierarchical'      => true,
 			'show_admin_column' => true,
+			'show_in_rest'      => true,
 			'labels'            => [
 				'name' => __( 'Source', 'tsvc' ),
 			],

@@ -28,6 +28,16 @@ class Renderer extends SingletonPattern {
 		} );
 		// CSS.
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ] );
+		// If single page is active, add contents.
+		if ( VideoPostType::get_instance()->public_flag() ) {
+			add_filter( 'the_content', [ $this, 'content_filter' ] );
+		}
+		// Thumbnail filter.
+		add_filter( 'post_thumbnail_html', [ $this, 'thumbnail_filter' ], 10, 5 );
+		// Excerpt filter.
+		add_filter( 'get_the_excerpt', [ $this, 'excerpt_filter' ], 10, 2 );
+		// Change URL.
+		add_filter( 'post_type_link', [ $this, 'permalink_filter' ], 10, 2 );
 	}
 
 	/**
@@ -129,5 +139,123 @@ class Renderer extends SingletonPattern {
 		wp_reset_postdata();
 		do_action( 'tsvc_after_video_loop', $query );
 		echo '</div>';
+	}
+
+	/**
+	 * Add content.
+	 *
+	 * @return string
+	 */
+	public function content_filter( $content ) {
+		if ( VideoPostType::get_instance()->post_type !== get_post_type() ) {
+			return $content;
+		}
+		$flag = apply_filters( 'tsvc_automatic_contents', true, get_the_ID() );
+		if ( ! $flag ) {
+			// Explicitly denied by filter.
+			return $flag;
+		}
+		ob_start();
+		tsvc_get_template_part( 'content-video' );
+		$addition = ob_get_contents();
+		ob_end_clean();
+		return $content . $addition;
+	}
+
+	/**
+	 * Get string.
+	 *
+	 * @param string       $html
+	 * @param int          $post_id
+	 * @param int          $post_thumbnail_id
+	 * @param string|int[] $size
+	 * @param array        $attr
+	 *
+	 * @return string
+	 */
+	public function thumbnail_filter( $html, $post_id, $post_thumbnail_id = 0, $size = 'thumbnail', $attr = [] ) {
+		if ( ! empty( $html ) ) {
+			// Thumbnail is set.
+			return $html;
+		}
+		if ( VideoPostType::get_instance()->post_type !== get_post_type( $post_id ) ) {
+			return $html;
+		}
+		$video = get_post_meta( $post_id, '_video_info', true );
+		if ( empty( $video['snippet']['thumbnails'] ) ) {
+			return $html;
+		}
+		switch ( $size ) {
+			case 'large':
+			case 'full':
+				$ratio = 'maxres';
+				break;
+			case 'post-thumbnail':
+				$ratio = 'standard';
+				break;
+			default:
+				$ratio = 'default';
+				break;
+		}
+		$size = apply_filters( 'tsvc_video_thumbnail_size', $ratio, $post_id, $size, $attr );
+		if ( empty( $video['snippet']['thumbnails'][ $ratio ] ) ) {
+			$image = $video['snippet']['thumbnails']['default'];
+		} else {
+			$image = $video['snippet']['thumbnails'][ $ratio ];
+		}
+		$attr['loading'] = 'lazy';
+		$attr['width']   = $image['width'];
+		$attr['height']  = $image['height'];
+		$attr['src']     = $image['url'];
+		$attr['class']   = "attachment-{$size} ";
+		$attrs = [];
+		foreach ( $attr as $key => $value ) {
+			$attrs[] = sprintf( '%s="%s"', $key, esc_attr( $value ) );
+		}
+		return sprintf( '<img %s/>', implode( ' ', $attrs ) );
+	}
+
+	/**
+	 * Trim excerpt.
+	 *
+	 * @param string   $excerpt Excerpt string.
+	 * @param \WP_Post $post    Post object.
+	 *
+	 * @return string
+	 */
+	public function excerpt_filter( $excerpt, $post ) {
+		if ( VideoPostType::get_instance()->post_type !== $post->post_type ) {
+			return $excerpt;
+		}
+		// This is video post type.
+		if ( is_single( $post->ID ) ) {
+			return $excerpt;
+		}
+		$excerpt_length = (int) _x( '55', 'excerpt_length' );
+		$excerpt_length = (int) apply_filters( 'excerpt_length', $excerpt_length );
+		$excerpt_more = apply_filters( 'excerpt_more', ' ' . '[&hellip;]' );
+		return wp_trim_words( $excerpt, $excerpt_length, $excerpt_more );
+	}
+
+	/**
+	 * Filter URL.
+	 *
+	 * @param string   $url  URL
+	 * @param \WP_Post $post Post object.
+	 *
+	 * @return string
+	 */
+	public function permalink_filter( $url, $post ) {
+		if ( is_admin() ) {
+			return $url;
+		}
+		if ( VideoPostType::get_instance()->post_type !== $post->post_type ) {
+			return $url;
+		}
+		if ( 2 > VideoPostType::get_instance()->public_flag() ) {
+			return $url;
+		}
+		$youtube_url = VideoPostType::get_instance()->get_video_url( $post->ID );
+		return $youtube_url ?: $url;
 	}
 }
