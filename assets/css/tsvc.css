@@ -33,7 +33,7 @@
 
 .video-list-link:hover,
 .video-list-link:active {
-	opacity: .7;
+	opacity: 0.7;
 }
 
 .video-list-thumbnail {
