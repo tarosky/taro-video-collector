@@ -64,6 +64,8 @@ class Renderer extends SingletonPattern {
 			'order'       => 'date',
 			'channel'     => '',
 			'wrapper'     => 'video-list',
+			'format'      => 'iframe',
+			'thubmnail'   => 'standard',
 			'empty'       => '',
 			'width'       => 1920,
 			'height'      => 1080,
@@ -134,7 +136,7 @@ class Renderer extends SingletonPattern {
 		do_action( 'tsvc_before_video_loop', $query );
 		while ( $query->have_posts() ) {
 			$query->the_post();
-			tsvc_get_template_part( 'video-list', '', $args );
+			tsvc_get_template_part( 'video-list', $args['format'], $args );
 		}
 		wp_reset_postdata();
 		do_action( 'tsvc_after_video_loop', $query );

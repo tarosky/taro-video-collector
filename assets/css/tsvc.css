@@ -27,6 +27,20 @@
 	padding: 0;
 }
 
+.video-list-link {
+	display: block;
+}
+
+.video-list-link:hover,
+.video-list-link:active {
+	opacity: .7;
+}
+
+.video-list-thumbnail {
+	max-width: 100%;
+	height: auto;
+}
+
 .video-list-meta {
 	margin: 10px 0;
 	display: flex;

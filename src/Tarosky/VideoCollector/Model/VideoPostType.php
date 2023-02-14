@@ -253,7 +253,7 @@ class VideoPostType extends PostTypePattern {
 		add_meta_box( 'youtube-info', __( 'Video Information', 'tsvc' ), function( \WP_Post $post ) {
 			$url = $this->get_video_url( $post->ID );
 			if ( ! $url ) {
-				printf( '<p class="description">%s</p>', esc_html_e( 'Failed to find a valid video URL.', 'tsvc' ) );
+				printf( '<p class="description">%s</p>', esc_html__( 'Failed to find a valid video URL.', 'tsvc' ) );
 
 				return;
 			}

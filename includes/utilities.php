@@ -65,7 +65,7 @@ function tsvc_get_template_part( $slug, $suffix = '', $args = [] ) {
  *
  * @see \Tarosky\VideoCollector\Model\VideoPostType::get_video_iframe()
  *
- * @param array            $args Arugments.
+ * @param array            $args Arguments.
  * @param int|null|WP_Post $post Post object.
  *
  * @return string
@@ -73,6 +73,74 @@ function tsvc_get_template_part( $slug, $suffix = '', $args = [] ) {
 function tsvc_iframe( $args = [], $post = null ) {
 	$post = get_post( $post );
 	return \Tarosky\VideoCollector\Model\VideoPostType::get_instance()->get_video_iframe( $post->ID, $args );
+}
+
+/**
+ * Get image src.
+ *
+ * @param string           $size Image size. standard, maxres, default, medium.
+ * @param int|null|WP_Post $post Post object.
+ *
+ * @return array
+ */
+function tsvc_image_src( $size = 'standard', $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post ) {
+		return [];
+	}
+	$info      = get_post_meta( $post->ID, '_video_info', true );
+	$size      = ! empty( $info['snippet']['thumbnails'][ $size ] ) ? $size : 'standard';
+	$thumbnail = $info['snippet']['thumbnails'][ $size ] ?? [];
+	if ( empty( $thumbnail ) ) {
+		return $thumbnail;
+	}
+	return [ $thumbnail['url'], $thumbnail['width'], $thumbnail['height'] ];
+}
+
+/**
+ * Image tag.
+ *
+ * @param string           $size  Image size. standard, maxres, default, medium.
+ * @param array            $attrs Attributes.
+ * @param int|null|WP_Post $post  Post object.
+ *
+ * @return string
+ */
+function tsvc_image_tag( $size = 'standard', $post = null, $attrs = [] ) {
+	$tag = tsvc_image_src( $size, $post );
+	if ( empty( $tag ) ) {
+		return '';
+	}
+	list( $src, $width, $height ) = $tag;
+	// Get video information.
+	$post         = get_post( $post );
+	$info         = get_post_meta( $post->ID, '_video_info', true );
+	$attrs        = wp_parse_args( $attrs, [
+		'alt'     => $info['snippet']['title'],
+		'width'   => $width,
+		'height'  => $height,
+		'class'   => 'tsvideo-thumbnail',
+		'loading' => 'lazy',
+	] );
+	$attrs['src'] = $src;
+	$tag          = '<img ';
+	foreach ( $attrs as $key => $value ) {
+		$tag .= sprintf( '%s="%s" ', $key, esc_attr( $value ) );
+	}
+	$tag .= ' />';
+	return $tag;
+}
+
+/**
+ * Get Video URL.
+ *
+ * @param int|null|WP_Post $post Post object.
+ *
+ * @return string
+ */
+function tsvc_video_url( $post = null ) {
+	$post = get_post( $post );
+	return \Tarosky\VideoCollector\Model\VideoPostType::get_instance()->get_video_url( $post->ID );
 }
 
 /**
