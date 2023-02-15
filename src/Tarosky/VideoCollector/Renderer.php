@@ -133,13 +133,13 @@ class Renderer extends SingletonPattern {
 			return;
 		}
 		printf( '<div class="%s">', esc_attr( $args['wrapper'] ) );
-		do_action( 'tsvc_before_video_loop', $query );
+		do_action( 'tsvc_before_video_loop', $query, $args );
 		while ( $query->have_posts() ) {
 			$query->the_post();
 			tsvc_get_template_part( 'video-list', $args['format'], $args );
 		}
 		wp_reset_postdata();
-		do_action( 'tsvc_after_video_loop', $query );
+		do_action( 'tsvc_after_video_loop', $query, $args );
 		echo '</div>';
 	}
 
