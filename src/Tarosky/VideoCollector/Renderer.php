@@ -77,7 +77,7 @@ class Renderer extends SingletonPattern {
 			'date_format' => '',
 			'offset'      => 0,
 			'post__in'    => '',
-			'prepend'     => '',
+			'include'     => '',
 		] );
 		$query_args = [
 			'post_type'      => VideoPostType::get_instance()->post_type,
