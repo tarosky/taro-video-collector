@@ -140,9 +140,9 @@ class Renderer extends SingletonPattern {
 		$posts = [];
 		// If front is set, prepend them.
 		if ( ! empty( $args['include'] ) ) {
-			$include_ids     = array_map( function( $id ) {
+			$include_ids = array_map( function( $id ) {
 				return (int) trim( $id );
-			},explode( ',', $args['include'] ) );
+			}, explode( ',', $args['include'] ) );
 			if ( ! empty( $include_ids ) ) {
 				$additional_args = [
 					'post_type'   => VideoPostType::get_instance()->post_type,
@@ -150,11 +150,11 @@ class Renderer extends SingletonPattern {
 					'post__in'    => $include_ids,
 					'orderby'     => 'post__in',
 				];
-				$pre_query = new \WP_Query( $additional_args );
+				$pre_query       = new \WP_Query( $additional_args );
 				if ( $pre_query->have_posts() ) {
 					$posts += $pre_query->posts;
 				}
-				$query_args[ 'post__not_in' ] = $include_ids;
+				$query_args['post__not_in'] = $include_ids;
 			}
 		}
 		// Do the query.
