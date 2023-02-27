@@ -75,13 +75,25 @@ class Renderer extends SingletonPattern {
 			'icon'        => '1',
 			'size'        => 'default',
 			'date_format' => '',
+			'offset'      => 0,
+			'post__in'    => '',
+			'prepend'     => '',
 		] );
 		$query_args = [
 			'post_type'      => VideoPostType::get_instance()->post_type,
 			'post_status'    => 'publish',
 			'posts_per_page' => $args['number'],
-			'paged'          => max( 1, $args['page'] ),
 		];
+		// set offset.
+		if ( 0 < $args['offset'] ) {
+			$query_args['offset'] = $args['offset'];
+		} elseif ( 0 < $args['page'] ) {
+			$query_args['paged'] = max( 1, $args['page'] );
+		}
+		// Specify post id.
+		if ( ! empty( $args['post__in'] ) ) {
+			$query_args['post__in'] = array_map( 'trim', explode( ',', $args['post__in'] ) );
+		}
 		switch ( $args['order'] ) {
 			case 'view':
 				$query_args['meta_key'] = '_video_view_count';
@@ -124,8 +136,40 @@ class Renderer extends SingletonPattern {
 			}
 			$query_args['tax_query'] = $tax_query;
 		}
+		// Results.
+		$posts = [];
+		// If front is set, prepend them.
+		if ( ! empty( $args['include'] ) ) {
+			$include_ids     = array_map( function( $id ) {
+				return (int) trim( $id );
+			},explode( ',', $args['include'] ) );
+			if ( ! empty( $include_ids ) ) {
+				$additional_args = [
+					'post_type'   => VideoPostType::get_instance()->post_type,
+					'post_status' => 'publish',
+					'post__in'    => $include_ids,
+					'orderby'     => 'post__in',
+				];
+				$pre_query = new \WP_Query( $additional_args );
+				if ( $pre_query->have_posts() ) {
+					$posts += $pre_query->posts;
+				}
+				$query_args[ 'post__not_in' ] = $include_ids;
+			}
+		}
+		// Do the query.
 		$query = new \WP_Query( $query_args );
-		if ( ! $query->have_posts() ) {
+		if ( $query->have_posts() ) {
+			// Offset if already retrieved.
+			$offset = count( $posts );
+			$limit  = $args['number'] - $offset;
+			for ( $i = 0; $i < $limit; $i++ ) {
+				$posts[] = $query->posts[ $i ];
+			}
+		}
+
+		// Finally, posts empty?
+		if ( empty( $posts ) ) {
 			// No post found.
 			if ( ! empty( $args['empty'] ) ) {
 				echo wp_kses_post( $args['empty'] );
@@ -134,8 +178,9 @@ class Renderer extends SingletonPattern {
 		}
 		printf( '<div class="%s">', esc_attr( $args['wrapper'] ) );
 		do_action( 'tsvc_before_video_loop', $query, $args );
-		while ( $query->have_posts() ) {
-			$query->the_post();
+		global $post;
+		foreach ( $posts as $post ) {
+			setup_postdata( $post );
 			tsvc_get_template_part( 'video-list', $args['format'], $args );
 		}
 		wp_reset_postdata();
