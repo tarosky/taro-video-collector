@@ -164,7 +164,9 @@ class Renderer extends SingletonPattern {
 			$offset = count( $posts );
 			$limit  = $args['number'] - $offset;
 			for ( $i = 0; $i < $limit; $i++ ) {
-				$posts[] = $query->posts[ $i ];
+				if ( isset( $query->posts[ $i ] ) ) {
+					$posts[] = $query->posts[ $i ];
+				}
 			}
 		}
 

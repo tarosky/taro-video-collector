@@ -89,7 +89,21 @@ function tsvc_image_src( $size = 'standard', $post = null ) {
 		return [];
 	}
 	$info      = get_post_meta( $post->ID, '_video_info', true );
-	$size      = ! empty( $info['snippet']['thumbnails'][ $size ] ) ? $size : 'standard';
+	if ( empty( $info['snippet']['thumbnails'][ $size ] ) ) {
+		// We need alternative.
+		foreach ( [
+			'standard',
+			'high',
+			'maxres',
+			'medium',
+			'default'
+		] as $candidate ) {
+			if ( ! empty( $info['snippet']['thumbnails'][ $candidate ] ) ) {
+				$size = $candidate;
+				break 1;
+			}
+		}
+	}
 	$thumbnail = $info['snippet']['thumbnails'][ $size ] ?? [];
 	if ( empty( $thumbnail ) ) {
 		return $thumbnail;
