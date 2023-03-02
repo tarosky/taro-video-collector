@@ -88,7 +88,7 @@ function tsvc_image_src( $size = 'standard', $post = null ) {
 	if ( ! $post ) {
 		return [];
 	}
-	$info      = get_post_meta( $post->ID, '_video_info', true );
+	$info = get_post_meta( $post->ID, '_video_info', true );
 	if ( empty( $info['snippet']['thumbnails'][ $size ] ) ) {
 		// We need alternative.
 		foreach ( [
@@ -96,7 +96,7 @@ function tsvc_image_src( $size = 'standard', $post = null ) {
 			'high',
 			'maxres',
 			'medium',
-			'default'
+			'default',
 		] as $candidate ) {
 			if ( ! empty( $info['snippet']['thumbnails'][ $candidate ] ) ) {
 				$size = $candidate;
