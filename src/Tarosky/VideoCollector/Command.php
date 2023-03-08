@@ -99,6 +99,51 @@ class Command extends \WP_CLI_Command {
 	}
 
 	/**
+	 * Fix GMT date.
+	 *
+	 * @param array $args
+	 *
+	 * @return void
+	 */
+	public function fix_date( $args ) {
+		$paged = 1;
+		while ( $paged ) {
+			$query = new \WP_Query( [
+				'post_type'      => VideoPostType::get_instance()->post_type,
+				'post_status'    => 'any',
+				'meta_query'     => [
+					[
+						'key'     => '_video_info',
+						'compare' => 'EXISTS',
+					],
+				],
+				'posts_per_page' => 100,
+				'paged'          => $paged,
+			] );
+			if ( ! $query->have_posts() ) {
+				$paged = 0;
+				break;
+			}
+			foreach ( $query->posts as $post ) {
+				$video = get_post_meta( $post->ID, '_video_info', true );
+				if ( empty( $video['snippet']['publishedAt'] ) ) {
+					\WP_CLI::warning( sprintf( '%d has no video information.', $post->ID ) );
+					continue 1;
+				}
+				$date = get_date_from_gmt( $video['snippet']['publishedAt'] );
+				if ( $date !== $post->post_date && $date > $post->post_date ) {
+					$result = wp_update_post( [
+						'ID'        => $post->ID,
+						'post_date' => $date,
+					] );
+					echo $result ? '.' : 'x';
+				}
+			}
+			$paged++;
+		}
+	}
+
+	/**
 	 * save YouTube videos from condition.
 	 *
 	 * ## OPTIONS

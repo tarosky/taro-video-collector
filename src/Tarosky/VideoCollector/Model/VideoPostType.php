@@ -111,8 +111,7 @@ class VideoPostType extends PostTypePattern {
 		$args['post_title']   = $video['snippet']['title'];
 		$args['post_type']    = $this->post_type_name();
 		$args['post_excerpt'] = $video['snippet']['description'];
-		$date                 = new \DateTime( $video['snippet']['publishedAt'] );
-		$args['post_date']    = $date->format( 'Y-m-d H:i:s' );
+		$args['post_date']    = get_date_from_gmt( $video['snippet']['publishedAt'],  'Y-m-d H:i:s' );
 		$args['post_status']  = ( 'public' === $video['status']['privacyStatus'] ) ? 'publish' : 'private';
 		$result               = wp_insert_post( $args, true );
 		if ( is_wp_error( $result ) ) {
